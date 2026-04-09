@@ -165,4 +165,80 @@ Features:
 
 ⸻
 
+👤 Role: Person 2 — Implemented the Search and Matching System
+## Project Structure
+Digital-Lost-and-Found/
+├── model/
+│   ├── Item.java
+│   ├── LostItem.java
+│   ├── FoundItem.java
+│   ├── ItemFactory.java
+│   ├── MatchResult.java
+│   └── SearchCriteria.java
+├── service/
+│   ├── MatchingStrategy.java
+│   ├── BasicMatchingStrategy.java
+│   ├── SearchService.java
+│   └── MatchObserver.java
+├── controller/
+│   └── SearchController.java
+├── view/
+│   └── SearchView.java
+├── Main.java
+└── SearchMain.java
+
+---
+
+## How to Run
+
+**Compile:**
+```bash
+javac model/*.java service/*.java controller/*.java view/*.java *.java
+```
+
+**Run:**
+```bash
+java Main        # Basic item creation + status update
+java SearchMain  # Full search + matching demo
+```
+
+---
+
+## Features
+
+- Report lost and found items
+- Search by keyword, location, or type
+- Auto-match lost vs found items with confidence scoring
+- Observer hook for notification system (Person 4 integration)
+- Status tracking: `Reported → Matched → Claimed → Closed`
+
+---
+
+## Design Patterns Used
+
+| Pattern | Where |
+|--------|-------|
+| MVC | Model / Service / Controller / View |
+| Strategy | `MatchingStrategy` — swappable matching algorithm |
+| Observer | `MatchObserver` — notifies on match found |
+| Factory | `ItemFactory` — creates Lost/Found items |
+
+---
+
+## Team Split
+
+| Person | Module |
+|--------|--------|
+| 1 | Item model + storage + CRUD |
+| 2 | Search + Matching system *(this module)* |
+| 3 | Claim + Verification system |
+| 4 | Admin + Notifications + Reports |
+
+---
+
+## Notes
+
+- Windows users: run `chcp 65001` before `java SearchMain` for clean output
+- Matching threshold: score ≥ 30 (location +50, name +30, description +20)
+
 
