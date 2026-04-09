@@ -1,3 +1,4 @@
+package model;
 public class FoundItem extends Item {
 
     private String foundLocation;
@@ -11,6 +12,13 @@ public class FoundItem extends Item {
 
         this.foundLocation = foundLocation;
         this.dateFound = dateFound;
+    }
+    public String getFoundLocation() {
+        return foundLocation;
+    }
+
+    public String getDateFound() {
+        return dateFound;
     }
 
     @Override

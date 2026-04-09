@@ -1,3 +1,4 @@
+package model;
 public class ItemFactory {
 
     public static Item createItem(String type, int itemId, String name, String description,

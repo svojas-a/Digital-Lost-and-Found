@@ -1,3 +1,4 @@
+package model;
 public class Item {
     protected int itemId;
     protected String name;
@@ -52,5 +53,16 @@ public class Item {
 
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
+    }
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getLocation() {
+        return location;
     }
 }
