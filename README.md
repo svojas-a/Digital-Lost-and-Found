@@ -225,6 +225,23 @@ java SearchMain  # Full search + matching demo
 
 ---
 
+## Team Split
+
+| Person | Module |
+|--------|--------|
+| 1 | Item model + storage + CRUD |
+| 2 | Search + Matching system *(this module)* |
+| 3 | Claim + Verification system |
+| 4 | Admin + Notifications + Reports |
+
+---
+
+## Notes
+
+- Windows users: run `chcp 65001` before `java SearchMain` for clean output
+- Matching threshold: score ≥ 30 (location +50, name +30, description +20)
+
+---
 👤 Role: Person 3 — Claim + Verification System
 
 ## Overview
@@ -342,22 +359,4 @@ java ClaimMain
 - In-memory repository suitable for MVP; replace with database for production
 - All verifications are immutable (audit trail integrity)
 - Status history maintained for complete traceability
-
-
-## Team Split
-
-| Person | Module |
-|--------|--------|
-| 1 | Item model + storage + CRUD |
-| 2 | Search + Matching system *(this module)* |
-| 3 | Claim + Verification system |
-| 4 | Admin + Notifications + Reports |
-
----
-
-## Notes
-
-- Windows users: run `chcp 65001` before `java SearchMain` for clean output
-- Matching threshold: score ≥ 30 (location +50, name +30, description +20)
-
 
