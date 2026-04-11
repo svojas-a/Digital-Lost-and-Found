@@ -125,6 +125,13 @@ public class SearchService {
         List<MatchResult> matches = matchingStrategy.findMatches(lost, found);
 
         if (!matches.isEmpty()) {
+            // 🔧 MODIFICATION START: Update items to "Matched" status before notifying
+            for (MatchResult match : matches) {
+                match.getLostItem().updateStatus("Matched");
+                match.getFoundItem().updateStatus("Matched");
+            }
+            // 🔧 MODIFICATION END
+            
             notifyObservers(matches);
         }
 
@@ -143,6 +150,13 @@ public class SearchService {
         List<MatchResult> matches = matchingStrategy.findMatches(lostList, foundList);
 
         if (!matches.isEmpty()) {
+            // 🔧 MODIFICATION START: Update items to "Matched" status before notifying
+            for (MatchResult match : matches) {
+                match.getLostItem().updateStatus("Matched");
+                match.getFoundItem().updateStatus("Matched");
+            }
+            // 🔧 MODIFICATION END
+            
             notifyObservers(matches);
         }
 
