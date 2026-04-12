@@ -1,4 +1,5 @@
 package controller;
+import controller.SystemController;
 
 import model.Item;
 import model.MatchResult;
@@ -22,6 +23,7 @@ public class SearchController {
 
     private final SearchService service;
     private final SearchView    view;
+    private final SystemController systemController = new SystemController();
 
     public SearchController(SearchService service, SearchView view) {
         this.service = service;
@@ -59,6 +61,7 @@ public class SearchController {
             view.showMessage("No matches found at this time.");
         } else {
             view.showMatchResults(matches);
+            systemController.onMatchFound("User");
         }
     }
 
@@ -74,6 +77,7 @@ public class SearchController {
             view.showMessage("No matches found for item: " + lostItem.getName());
         } else {
             view.showMatchResults(matches);
+            systemController.onMatchFound("User");
         }
     }
 }

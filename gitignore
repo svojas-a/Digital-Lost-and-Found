@@ -1,3 +1,29 @@
+# Compiled Files
 *.class
+*.jar
+*.war
+
+# IDE
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
-*.DS_Store
+logs/
+
+# Build
+bin/
+out/
+target/
+dist/
+
+# Runtime
+.classpath
+.project
