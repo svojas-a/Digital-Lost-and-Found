@@ -241,4 +241,122 @@ java SearchMain  # Full search + matching demo
 - Windows users: run `chcp 65001` before `java SearchMain` for clean output
 - Matching threshold: score ≥ 30 (location +50, name +30, description +20)
 
+---
+👤 Role: Person 3 — Claim + Verification System
+
+## Overview
+
+Implements the Claim and Verification workflow for matched lost & found items with state machine validation and immutable audit trails.
+
+---
+
+## Project Structure
+
+```
+model/
+  ├── claim/
+  │   ├── ClaimStatus.java
+  │   ├── VerificationDecision.java
+  │   ├── VerificationMethod.java
+  │   ├── Verification.java
+  │   └── Claim.java
+  └── validator/
+      ├── ItemStatusValidator.java
+      └── ClaimValidator.java
+service/
+  ├── claim/
+  │   ├── ClaimRepository.java
+  │   └── ClaimService.java
+  ├── impl/
+  │   └── InMemoryClaimRepository.java
+  ├── observer/
+  │   └── ClaimCreationObserver.java
+  └── SearchService.java (modified)
+controller/
+  └── ClaimController.java
+view/
+  └── ClaimView.java
+ClaimMain.java
+```
+
+---
+
+## How to Run
+
+**Compile Everything**
+```bash
+javac -d . \
+  model/claim/*.java \
+  model/validator/*.java \
+  service/claim/*.java \
+  service/impl/*.java \
+  service/observer/*.java \
+  controller/ClaimController.java \
+  view/ClaimView.java \
+  ClaimMain.java
+```
+
+**Run the Complete Demo**
+```bash
+java ClaimMain
+```
+
+---
+
+## Features
+
+- Auto-create claims from matched items via Observer pattern
+- State machine with strict claim lifecycle: `MATCHED → CLAIM_REQUESTED → UNDER_VERIFICATION → CLAIM_APPROVED/REJECTED → CLOSED`
+- Immutable verification records for audit trail
+- Duplicate claim prevention
+- Automatic ownership transfer on approval
+- Item status reversion on rejection (available for re-matching)
+- Full timeline tracking with timestamps
+
+---
+
+## Design Patterns Used
+
+| Pattern | Where |
+|---------|-------|
+| State Machine | Claim lifecycle with enforced transitions |
+| Observer | ClaimCreationObserver — auto-creates claims on match |
+| Repository | ClaimRepository — abstraction for persistence |
+| Validator | ClaimValidator + ItemStatusValidator — business rules |
+| MVC | ClaimController / ClaimView / ClaimService |
+
+---
+
+## Integration Points
+
+| With | Integration |
+|------|-----------|
+| Person 2 (SearchService) | Listens via MatchObserver; auto-creates claims |
+| Person 1 (Item) | Updates status, transfers ownership via setters |
+| Person 4 (Future) | Extension point: register observers for notifications |
+
+---
+
+## Key Components
+
+**ClaimService** (9 core methods)
+- `createClaimFromMatch()` — auto-create from match detection
+- `requestClaim()` — claimant initiates
+- `startVerification()` — admin assigns verifier
+- `submitVerification()` — verifier decision
+- `approveClaim()` — ownership transfer + close
+- `rejectClaim()` — revert items + close
+
+**Claim State Machine**
+- Validates every transition
+- Records all changes with timestamps
+- Terminal states: `CLOSED`, `CLAIM_REJECTED`
+
+---
+
+## Notes
+
+- In-memory repository suitable for MVP; replace with database for production
+- All verifications are immutable (audit trail integrity)
+- Status history maintained for complete traceability
 

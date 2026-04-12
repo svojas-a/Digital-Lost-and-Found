@@ -51,9 +51,22 @@ public class Item {
         this.ownerName = ownerName;
     }
 
+    // 🔧 MODIFICATION START: Add getter for ownerName (needed by Claim class)
+    public String getOwnerName() {
+        return ownerName;
+    }
+    // 🔧 MODIFICATION END
+
     public void setContactInfo(String contactInfo) {
         this.contactInfo = contactInfo;
     }
+
+    // 🔧 MODIFICATION START: Add getter for contactInfo (needed by Claim class)
+    public String getContactInfo() {
+        return contactInfo;
+    }
+    // 🔧 MODIFICATION END
+
     public String getName() {
         return name;
     }
