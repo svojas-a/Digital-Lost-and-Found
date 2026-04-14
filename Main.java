@@ -156,7 +156,7 @@ public class Main {
         // ===============================
         // 8. REPORT (Person 4)
         // ===============================
-        systemController.generateSystemReport(itemStore, claims);
+        systemController.generateSystemReport();
     }
 }
 

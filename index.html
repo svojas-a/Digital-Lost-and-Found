@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digital Lost & Found</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --border: #E2DDD4;
+    --text: #1A1814;
+    --muted: #7A756B;
+    --accent: #C84B2F;
+    --accent-light: #FAECEA;
+    --accent-dark: #9A3420;
+    --found-bg: #EAF6F0;
+    --found-color: #0F6E56;
+    --lost-bg: #FFF3E0;
+    --lost-color: #A05A00;
+    --info-bg: #EEF3FC;
+    --info-color: #1A4A9C;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .logo-icon svg { width: 20px; height: 20px; }
+
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  header .tagline {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 5px;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+  }
+
+  .tab-btn {
+    flex: 1;
+    padding: 0.65rem 1rem;
+    border: none;
+    background: transparent;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .tab-btn:not(.active):hover { background: var(--bg); color: var(--text); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.75rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.25rem;
+  }
+
+  .card-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    font-weight: 400;
+    margin-bottom: 0.35rem;
+  }
+
+  .card-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .form-grid.full { grid-template-columns: 1fr; }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .field input, .field select, .field textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .field input:focus, .field select:focus, .field textarea:focus {
+    border-color: var(--accent);
+    background: #fff;
+  }
+
+  .field textarea { resize: vertical; min-height: 80px; }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    padding: 0.65rem 1.4rem;
+    border-radius: 9px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.18s;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+  }
+
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-dark); }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--accent);
+    border: 1px solid var(--accent);
+  }
+  .btn-outline:hover { background: var(--accent-light); }
+
+  .btn-success { background: #0F6E56; color: #fff; }
+  .btn-success:hover { background: #085041; }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 1.25rem;
+    align-items: center;
+  }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1.5rem 0;
+  }
+
+  /* Item list */
+  .item-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .item-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.15s;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .item-card:hover { border-color: #c5c0b8; }
+
+  .item-badge {
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .badge-found { background: var(--found-bg); color: var(--found-color); }
+  .badge-lost { background: var(--lost-bg); color: var(--lost-color); }
+  .badge-claimed { background: var(--info-bg); color: var(--info-color); }
+  .badge-closed { background: #F0EDE8; color: var(--muted); }
+
+  .item-info { flex: 1; min-width: 0; }
+  .item-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 2px; }
+  .item-meta { font-size: 0.78rem; color: var(--muted); }
+
+  .item-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  .btn-sm {
+    padding: 0.35rem 0.8rem;
+    font-size: 0.78rem;
+    border-radius: 7px;
+  }
+
+  /* Search bar */
+  .search-bar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .search-bar input {
+    flex: 1;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    padding: 0.65rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .search-bar input:focus { border-color: var(--accent); }
+
+  /* Toast */
+  #toast-container {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 9999;
+  }
+
+  .toast {
+    background: var(--text);
+    color: #fff;
+    padding: 0.7rem 1.1rem;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    animation: toastIn 0.3s ease;
+    max-width: 320px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .toast.success { background: #0F6E56; }
+  .toast.error { background: #A32D2D; }
+  .toast.info { background: #185FA5; }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .modal {
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 2rem;
+    width: 100%;
+    max-width: 440px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+    animation: modalIn 0.25s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(8px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    font-weight: 400;
+    margin-bottom: 0.3rem;
+  }
+
+  .modal p { font-size: 0.85rem; color: var(--muted); margin-bottom: 1.25rem; }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+  }
+
+  .empty-state .icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.4;
+  }
+
+  .empty-state p { font-size: 0.875rem; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-label { font-size: 0.75rem; color: var(--muted); font-weight: 500; }
+
+  @media (max-width: 600px) {
+    .form-grid { grid-template-columns: 1fr; }
+    .tabs { flex-wrap: wrap; }
+    .tab-btn { font-size: 0.78rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  </div>
+  <h1>Digital Lost &amp; Found</h1>
+  <span class="tagline">OOAD Mini Project</span>
+</header>
+
+<div class="container">
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-num" id="stat-lost" style="color: var(--lost-color);">0</div>
+      <div class="stat-label">Items Lost</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-found" style="color: var(--found-color);">0</div>
+      <div class="stat-label">Items Found</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-num" id="stat-matched" style="color: var(--info-color);">0</div>
+      <div class="stat-label">Matches Made</div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('report-lost')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Report Lost
+    </button>
+    <button class="tab-btn" onclick="switchTab('report-found')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>
+      Report Found
+    </button>
+    <button class="tab-btn" onclick="switchTab('search')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      Search &amp; Claim
+    </button>
+    <button class="tab-btn" onclick="switchTab('all-items')">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      All Items
+    </button>
+  </div>
+
+  <!-- REPORT LOST -->
+  <div class="tab-panel active" id="tab-report-lost">
+    <div class="card">
+      <div class="card-title">Report a Lost Item</div>
+      <div class="card-desc">Fill in what you lost and we'll notify you if someone turns it in.</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Item Name *</label>
+          <input type="text" id="lost-name" placeholder="e.g. Black wallet, iPhone 13...">
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select id="lost-category">
+            <option>Electronics</option>
+            <option>Wallet / Purse</option>
+            <option>Keys</option>
+            <option>Clothing</option>
+            <option>Bag / Backpack</option>
+            <option>Books / Documents</option>
+            <option>Stationery</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="lost-person" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label>Location Lost</label>
+          <input type="text" id="lost-location" placeholder="e.g. Library 2nd floor">
+        </div>
+        <div class="field" style="grid-column: 1/-1">
+          <label>Description</label>
+          <textarea id="lost-desc" placeholder="Colour, brand, any identifying marks..."></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" onclick="submitLostItem()">
+          Submit Lost Report
+        </button>
+        <span id="lost-msg" style="font-size:0.82rem; color: var(--muted);"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORT FOUND -->
+  <div class="tab-panel" id="tab-report-found">
+    <div class="card">
+      <div class="card-title">Report a Found Item</div>
+      <div class="card-desc">Let us know what you found and we'll help reunite it with its owner.</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Item Name *</label>
+          <input type="text" id="found-name" placeholder="e.g. Black wallet, iPhone 13...">
+        </div>
+        <div class="field">
+          <label>Category</label>
+          <select id="found-category">
+            <option>Electronics</option>
+            <option>Wallet / Purse</option>
+            <option>Keys</option>
+            <option>Clothing</option>
+            <option>Bag / Backpack</option>
+            <option>Books / Documents</option>
+            <option>Stationery</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Your Name</label>
+          <input type="text" id="found-person" placeholder="Your name">
+        </div>
+        <div class="field">
+          <label>Where Found</label>
+          <input type="text" id="found-location" placeholder="e.g. Canteen table 5">
+        </div>
+        <div class="field" style="grid-column: 1/-1">
+          <label>Description</label>
+          <textarea id="found-desc" placeholder="Colour, brand, condition, any marks..."></textarea>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-success" onclick="submitFoundItem()">
+          Submit Found Report
+        </button>
+        <span id="found-msg" style="font-size:0.82rem; color: var(--muted);"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SEARCH & CLAIM -->
+  <div class="tab-panel" id="tab-search">
+    <div class="card">
+      <div class="card-title">Search Found Items</div>
+      <div class="card-desc">Browse items others have found. If you see yours, submit a claim.</div>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search by name, category, or location..." oninput="renderSearch()">
+        <button class="btn btn-outline" onclick="renderSearch()">Search</button>
+      </div>
+      <div id="search-results" class="item-list"></div>
+    </div>
+  </div>
+
+  <!-- ALL ITEMS -->
+  <div class="tab-panel" id="tab-all-items">
+    <div class="card">
+      <div class="card-title">All Items</div>
+      <div class="card-desc">Complete log of all reported lost and found items.</div>
+      <div id="all-items-list" class="item-list"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Claim Modal -->
+<div id="claim-modal" class="modal-overlay" style="display:none;">
+  <div class="modal">
+    <h3>Claim This Item</h3>
+    <p>Tell us why this item is yours. An admin will verify and approve your claim.</p>
+    <div class="field" style="margin-bottom: 1rem;">
+      <label>Your Name *</label>
+      <input type="text" id="claim-name" placeholder="Full name">
+    </div>
+    <div class="field" style="margin-bottom: 1rem;">
+      <label>Contact / Email</label>
+      <input type="text" id="claim-contact" placeholder="Email or phone">
+    </div>
+    <div class="field" style="margin-bottom: 1rem;">
+      <label>Proof of Ownership</label>
+      <textarea id="claim-proof" placeholder="Describe something only the owner would know (serial number, contents inside, sticker, etc.)" style="min-height: 80px;"></textarea>
+    </div>
+    <div class="btn-row" style="justify-content: flex-end; margin-top: 0.5rem;">
+      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="submitClaim()">Submit Claim</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<script>
+const BASE = "http://localhost:8080";
+let items = [];
+let claimTargetId = null;
+let matchCount = 0;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    const tabs = ['report-lost','report-found','search','all-items'];
+    b.classList.toggle('active', tabs[i] === tab);
+  });
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  if (tab === 'search') renderSearch();
+  if (tab === 'all-items') renderAll();
+}
+
+function toast(msg, type='info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  const icons = { success: '✓', error: '✕', info: 'ℹ' };
+  t.innerHTML = `<span style="font-size:1rem">${icons[type]||'ℹ'}</span> ${msg}`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 4000);
+}
+
+function updateStats() {
+  document.getElementById('stat-lost').textContent = items.filter(i => i.type === 'lost').length;
+  document.getElementById('stat-found').textContent = items.filter(i => i.type === 'found').length;
+  document.getElementById('stat-matched').textContent = matchCount;
+}
+
+async function submitLostItem() {
+  const name = document.getElementById('lost-name').value.trim();
+  const cat = document.getElementById('lost-category').value;
+  const person = document.getElementById('lost-person').value.trim() || 'Anonymous';
+  const loc = document.getElementById('lost-location').value.trim() || 'Unknown';
+  const desc = document.getElementById('lost-desc').value.trim();
+
+  if (!name) { toast('Please enter the item name.', 'error'); return; }
+
+  const payload = `${name}|${cat}|${person}|${loc}|${desc}`;
+
+  let matched = false;
+  try {
+    const res = await fetch(`${BASE}/reportLost`, { method: 'POST', body: payload });
+    const data = await res.text();
+    matched = data.toLowerCase().includes('match');
+  } catch(e) {
+    toast('Could not connect to server. Saving locally.', 'error');
+  }
+
+  const item = {
+    id: Date.now(),
+    type: 'lost',
+    name,
+    category: cat,
+    person,
+    location: loc,
+    description: desc,
+    status: 'open',
+    date: new Date().toLocaleDateString()
+  };
+  items.push(item);
+
+  if (matched) {
+    matchCount++;
+    toast(`Match found for "${name}"! A claim has been initiated.`, 'success');
+  } else {
+    toast(`Lost report for "${name}" submitted.`, 'info');
+  }
+
+  document.getElementById('lost-name').value = '';
+  document.getElementById('lost-person').value = '';
+  document.getElementById('lost-location').value = '';
+  document.getElementById('lost-desc').value = '';
+  updateStats();
+}
+
+async function submitFoundItem() {
+  const name = document.getElementById('found-name').value.trim();
+  const cat = document.getElementById('found-category').value;
+  const person = document.getElementById('found-person').value.trim() || 'Anonymous';
+  const loc = document.getElementById('found-location').value.trim() || 'Unknown';
+  const desc = document.getElementById('found-desc').value.trim();
+
+  if (!name) { toast('Please enter the item name.', 'error'); return; }
+
+  const payload = `${name}|${cat}|${person}|${loc}|${desc}`;
+
+  let matched = false;
+  try {
+    const res = await fetch(`${BASE}/reportFound`, { method: 'POST', body: payload });
+    const data = await res.text();
+    matched = data.toLowerCase().includes('match');
+  } catch(e) {
+    toast('Could not connect to server. Saving locally.', 'error');
+  }
+
+  const item = {
+    id: Date.now(),
+    type: 'found',
+    name,
+    category: cat,
+    person,
+    location: loc,
+    description: desc,
+    status: 'open',
+    date: new Date().toLocaleDateString()
+  };
+  items.push(item);
+
+  if (matched) {
+    matchCount++;
+    toast(`A match was found for "${name}"! The owner has been notified.`, 'success');
+  } else {
+    toast(`Found item "${name}" reported. Thank you!`, 'success');
+  }
+
+  document.getElementById('found-name').value = '';
+  document.getElementById('found-person').value = '';
+  document.getElementById('found-location').value = '';
+  document.getElementById('found-desc').value = '';
+  updateStats();
+}
+
+function renderSearch() {
+  const q = (document.getElementById('search-input').value || '').toLowerCase();
+  const list = document.getElementById('search-results');
+  const results = items.filter(i => {
+    if (i.type !== 'found') return false;
+    if (!q) return true;
+    return i.name.toLowerCase().includes(q)
+      || i.category.toLowerCase().includes(q)
+      || i.location.toLowerCase().includes(q)
+      || (i.description||'').toLowerCase().includes(q);
+  });
+
+  if (!results.length) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>${q ? 'No found items match your search.' : 'No found items reported yet.'}</p></div>`;
+    return;
+  }
+
+  list.innerHTML = results.map(i => `
+    <div class="item-card">
+      <span class="item-badge badge-found">Found</span>
+      <div class="item-info">
+        <div class="item-name">${i.name}</div>
+        <div class="item-meta">${i.category} &nbsp;·&nbsp; Found by ${i.person} &nbsp;·&nbsp; ${i.location} &nbsp;·&nbsp; ${i.date}</div>
+        ${i.description ? `<div class="item-meta" style="margin-top:2px;">${i.description}</div>` : ''}
+      </div>
+      <div class="item-actions">
+        ${i.status === 'open'
+          ? `<button class="btn btn-primary btn-sm" onclick="openClaimModal(${i.id})">Claim</button>`
+          : `<span class="item-badge badge-claimed">${i.status}</span>`
+        }
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderAll() {
+  const list = document.getElementById('all-items-list');
+  if (!items.length) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No items reported yet.</p></div>`;
+    return;
+  }
+  list.innerHTML = [...items].reverse().map(i => `
+    <div class="item-card">
+      <span class="item-badge ${i.type === 'found' ? 'badge-found' : 'badge-lost'}">${i.type === 'found' ? 'Found' : 'Lost'}</span>
+      <div class="item-info">
+        <div class="item-name">${i.name}</div>
+        <div class="item-meta">${i.category} &nbsp;·&nbsp; ${i.person} &nbsp;·&nbsp; ${i.location} &nbsp;·&nbsp; ${i.date}</div>
+      </div>
+      <span class="item-badge ${i.status === 'open' ? (i.type==='lost'?'badge-lost':'badge-found') : i.status==='claimed'?'badge-claimed':'badge-closed'}">${i.status}</span>
+    </div>
+  `).join('');
+}
+
+function openClaimModal(id) {
+  claimTargetId = id;
+  document.getElementById('claim-name').value = '';
+  document.getElementById('claim-contact').value = '';
+  document.getElementById('claim-proof').value = '';
+  document.getElementById('claim-modal').style.display = 'flex';
+}
+
+function closeModal() {
+  document.getElementById('claim-modal').style.display = 'none';
+  claimTargetId = null;
+}
+
+async function submitClaim() {
+  const name = document.getElementById('claim-name').value.trim();
+  const contact = document.getElementById('claim-contact').value.trim();
+  const proof = document.getElementById('claim-proof').value.trim();
+
+  if (!name) { toast('Please enter your name.', 'error'); return; }
+
+  const item = items.find(i => i.id === claimTargetId);
+  if (!item) { closeModal(); return; }
+
+  const payload = `${item.name}|${name}|${contact}|${proof}`;
+
+  try {
+    await fetch(`${BASE}/submitClaim`, { method: 'POST', body: payload });
+  } catch(e) {}
+
+  item.status = 'claimed';
+  closeModal();
+  toast(`Claim submitted for "${item.name}". Admin will review and approve.`, 'success');
+  renderSearch();
+  updateStats();
+}
+
+document.getElementById('claim-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+updateStats();
+</script>
+
+</body>
+</html>

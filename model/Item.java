@@ -42,6 +42,9 @@ public class Item {
     public int getItemId() {
         return itemId;
     }
+    public String getOwner() {
+        return this.ownerName;
+    }
 
     public String getStatus() {
         return status;
