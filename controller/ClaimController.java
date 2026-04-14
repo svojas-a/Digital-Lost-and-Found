@@ -1,6 +1,7 @@
 package controller;
 
 import model.claim.Claim;
+import controller.SystemController;
 import model.claim.Verification;
 import model.claim.VerificationDecision;
 import model.claim.VerificationMethod;
@@ -22,6 +23,7 @@ public class ClaimController {
 
     private final ClaimService claimService;
     private final ClaimView claimView;
+    private final SystemController systemController = new SystemController();
 
     public ClaimController(ClaimService claimService, ClaimView claimView) {
         if (claimService == null || claimView == null) {
@@ -45,6 +47,7 @@ public class ClaimController {
         try {
             Claim updatedClaim = claimService.requestClaim(claimId, requestingUserName);
             claimView.showClaimRequested(updatedClaim);
+            systemController.onClaimSubmitted("Admin");
         } catch (Exception e) {
             claimView.showError("Failed to request claim: " + e.getMessage());
         }
@@ -102,6 +105,7 @@ public class ClaimController {
             // Auto-approve claim after decision submission
             Claim approvedClaim = claimService.approveClaim(claimId);
             claimView.showClaimApproved(approvedClaim);
+            systemController.onClaimApproved(null, verifierName);
 
         } catch (Exception e) {
             claimView.showError("Failed to process approval: " + e.getMessage());
@@ -138,6 +142,7 @@ public class ClaimController {
 
             claimService.submitVerification(claimId, verification);
             claimView.showVerificationSubmitted(verification);
+            systemController.onClaimSubmitted("Admin");
 
             // Auto-reject claim after decision submission
             Claim rejectedClaim = claimService.rejectClaim(claimId);
@@ -199,3 +204,5 @@ public class ClaimController {
             .format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }
+    
+
