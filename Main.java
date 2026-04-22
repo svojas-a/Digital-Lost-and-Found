@@ -126,7 +126,7 @@ public class Main {
     claim.addVerification(verification);
 
     // Step 5: approve claim
-    claimService.approveClaim(claim.getClaimId());
+    //claimService.approveClaim(claim.getClaimId());
 }
 
 
@@ -137,12 +137,17 @@ public class Main {
 
     Claim approvedClaim = claims.get(0);   // 🔥 get real claim
 
-    systemController.onClaimSubmitted("Admin");
+   systemController.onClaimSubmitted("Admin");
 
-    // 🔥 USE REAL DATA instead of "User1"
-    systemController.onClaimApproved(item1, approvedClaim.getClaimantName());
+    System.out.println("\n=== ADMIN DECISION ===");
+    System.out.println("Admin approved the claim manually.");
 
-    systemController.markNotificationAsRead(0);
+    claimService.approveClaim(approvedClaim.getClaimId());
+
+    systemController.onClaimApproved(
+        item1,
+        approvedClaim.getClaimantName()
+);
 }
 
 

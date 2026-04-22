@@ -47,7 +47,7 @@ public class SystemController {
         );
 
         items.add(lostItem);
-        System.out.println(lostItem);
+        System.out.println("Item Added: " + lostItem.getName());
 
         return checkForMatches(lostItem);
     }
@@ -76,7 +76,7 @@ public class SystemController {
         );
 
         items.add(foundItem);
-        System.out.println(foundItem);
+        System.out.println("Item Added: " + foundItem.getName());
 
         return checkForMatches(foundItem);
     }
@@ -101,13 +101,13 @@ public class SystemController {
         // Find the matching found item and mark it claimed
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(itemName) && item.getStatus().equals("Reported")) {
-                onClaimApproved(item, claimerName);
+                onClaimSubmitted("Admin");
                 return;
             }
         }
 
         // If item not found locally, still log the claim
-        claims.add(null);
+        System.out.println("Claim stored as pending.");
     }
 
     // ================================================
@@ -116,20 +116,22 @@ public class SystemController {
     // ================================================
     private boolean checkForMatches(Item newItem) {
 
-        boolean matchFound = false;
+    boolean matchFound = false;
 
-        for (Item item : items) {
-            if (item == newItem) continue;
-            if (item.getName().equalsIgnoreCase(newItem.getName())) {
-                matchFound = true;
-                onMatchFound(item.getOwner());
-                onClaimSubmitted("Admin");
-                onClaimApproved(item, newItem.getOwner());
-            }
+    for (Item item : items) {
+
+        if (item == newItem) continue;
+
+        if (item.getName().equalsIgnoreCase(newItem.getName())) {
+
+            matchFound = true;
+
+            onMatchFound(item.getOwner());
         }
-        return matchFound;
     }
 
+    return matchFound;
+}
     // ================================================
     // EVENTS
     // ================================================
@@ -143,7 +145,7 @@ public class SystemController {
         view.showSection("CLAIM SUBMITTED");
         notificationService.sendNotification(admin, "New claim submitted!");
         view.showNotification(admin, "New claim submitted!");
-        claims.add(null);
+        System.out.println("Pending claim added.");
     }
 
     public void onClaimApproved(Item item, String user) {
@@ -155,6 +157,32 @@ public class SystemController {
             item.updateStatus("Closed");
             view.showItemClosed(item.getItemId());
         }
+    }
+    public void approveClaim(String itemName, String user) {
+
+    for (Item item : items) {
+
+        if (item.getName().equalsIgnoreCase(itemName)
+            && item.getStatus().equals("Reported")) {
+
+            onClaimApproved(item, user);
+            return;
+            }
+       }
+    }
+    public void rejectClaim(String itemName, String user) {
+
+        view.showSection("CLAIM REJECTED");
+
+        notificationService.sendNotification(
+            user,
+            "Your claim was rejected."
+        );
+
+        view.showNotification(
+            user,
+            "Your claim was rejected."
+        );
     }
 
     // ================================================

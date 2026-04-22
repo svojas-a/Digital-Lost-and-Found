@@ -411,413 +411,790 @@
 </head>
 <body>
 
+<!-- LOGIN SCREEN -->
+<div id="login-screen" class="modal-overlay">
+  <div class="modal">
+    <h3>Welcome</h3>
+    <p>Login as User or Admin</p>
+
+    <div class="field" style="margin-bottom:12px;">
+      <label>Name</label>
+      <input type="text" id="login-name" placeholder="Enter name">
+    </div>
+
+    <div class="field" style="margin-bottom:12px;">
+      <label>Role</label>
+      <select id="login-role">
+        <option value="user">User</option>
+        <option value="admin">Admin</option>
+      </select>
+    </div>
+
+    <div class="field" style="margin-bottom:12px;">
+      <label>Password (Admin only)</label>
+      <input type="password" id="login-pass" placeholder="Enter password">
+    </div>
+
+    <div class="btn-row" style="justify-content:flex-end;">
+      <button class="btn btn-primary" onclick="loginUser()">Login</button>
+    </div>
+  </div>
+</div>
+
 <header>
   <div class="logo-icon">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/>
+      <line x1="21" y1="21" x2="16.65" y2="16.65"/>
     </svg>
   </div>
+
   <h1>Digital Lost &amp; Found</h1>
-  <span class="tagline">OOAD Mini Project</span>
+
+  <span class="tagline" id="welcome-text">OOAD Mini Project</span>
+
+  <button class="btn btn-outline btn-sm" onclick="logoutUser()">Logout</button>
 </header>
 
 <div class="container">
 
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-num" id="stat-lost" style="color: var(--lost-color);">0</div>
-      <div class="stat-label">Items Lost</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-found" style="color: var(--found-color);">0</div>
-      <div class="stat-label">Items Found</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-num" id="stat-matched" style="color: var(--info-color);">0</div>
-      <div class="stat-label">Matches Made</div>
-    </div>
+<!-- STATS -->
+<div class="stats-row">
+  <div class="stat-card">
+    <div class="stat-num" id="stat-lost">0</div>
+    <div class="stat-label">Lost</div>
   </div>
 
-  <div class="tabs">
-    <button class="tab-btn active" onclick="switchTab('report-lost')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      Report Lost
-    </button>
-    <button class="tab-btn" onclick="switchTab('report-found')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><path d="M8 11h6M11 8v6"/></svg>
-      Report Found
-    </button>
-    <button class="tab-btn" onclick="switchTab('search')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-      Search &amp; Claim
-    </button>
-    <button class="tab-btn" onclick="switchTab('all-items')">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-      All Items
-    </button>
+  <div class="stat-card">
+    <div class="stat-num" id="stat-found">0</div>
+    <div class="stat-label">Found</div>
   </div>
 
-  <!-- REPORT LOST -->
-  <div class="tab-panel active" id="tab-report-lost">
-    <div class="card">
-      <div class="card-title">Report a Lost Item</div>
-      <div class="card-desc">Fill in what you lost and we'll notify you if someone turns it in.</div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Item Name *</label>
-          <input type="text" id="lost-name" placeholder="e.g. Black wallet, iPhone 13...">
-        </div>
-        <div class="field">
-          <label>Category</label>
-          <select id="lost-category">
-            <option>Electronics</option>
-            <option>Wallet / Purse</option>
-            <option>Keys</option>
-            <option>Clothing</option>
-            <option>Bag / Backpack</option>
-            <option>Books / Documents</option>
-            <option>Stationery</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Your Name</label>
-          <input type="text" id="lost-person" placeholder="Your name">
-        </div>
-        <div class="field">
-          <label>Location Lost</label>
-          <input type="text" id="lost-location" placeholder="e.g. Library 2nd floor">
-        </div>
-        <div class="field" style="grid-column: 1/-1">
-          <label>Description</label>
-          <textarea id="lost-desc" placeholder="Colour, brand, any identifying marks..."></textarea>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-primary" onclick="submitLostItem()">
-          Submit Lost Report
-        </button>
-        <span id="lost-msg" style="font-size:0.82rem; color: var(--muted);"></span>
-      </div>
-    </div>
+  <div class="stat-card">
+    <div class="stat-num" id="stat-claims">0</div>
+    <div class="stat-label">Claims</div>
   </div>
+</div>
 
-  <!-- REPORT FOUND -->
-  <div class="tab-panel" id="tab-report-found">
-    <div class="card">
-      <div class="card-title">Report a Found Item</div>
-      <div class="card-desc">Let us know what you found and we'll help reunite it with its owner.</div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Item Name *</label>
-          <input type="text" id="found-name" placeholder="e.g. Black wallet, iPhone 13...">
-        </div>
-        <div class="field">
-          <label>Category</label>
-          <select id="found-category">
-            <option>Electronics</option>
-            <option>Wallet / Purse</option>
-            <option>Keys</option>
-            <option>Clothing</option>
-            <option>Bag / Backpack</option>
-            <option>Books / Documents</option>
-            <option>Stationery</option>
-            <option>Other</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Your Name</label>
-          <input type="text" id="found-person" placeholder="Your name">
-        </div>
-        <div class="field">
-          <label>Where Found</label>
-          <input type="text" id="found-location" placeholder="e.g. Canteen table 5">
-        </div>
-        <div class="field" style="grid-column: 1/-1">
-          <label>Description</label>
-          <textarea id="found-desc" placeholder="Colour, brand, condition, any marks..."></textarea>
-        </div>
-      </div>
-      <div class="btn-row">
-        <button class="btn btn-success" onclick="submitFoundItem()">
-          Submit Found Report
-        </button>
-        <span id="found-msg" style="font-size:0.82rem; color: var(--muted);"></span>
-      </div>
-    </div>
-  </div>
+<!-- TABS -->
+<div class="tabs">
 
-  <!-- SEARCH & CLAIM -->
-  <div class="tab-panel" id="tab-search">
-    <div class="card">
-      <div class="card-title">Search Found Items</div>
-      <div class="card-desc">Browse items others have found. If you see yours, submit a claim.</div>
-      <div class="search-bar">
-        <input type="text" id="search-input" placeholder="Search by name, category, or location..." oninput="renderSearch()">
-        <button class="btn btn-outline" onclick="renderSearch()">Search</button>
-      </div>
-      <div id="search-results" class="item-list"></div>
-    </div>
-  </div>
+<button class="tab-btn active" onclick="switchTab('report-lost')">
+Report Lost
+</button>
 
-  <!-- ALL ITEMS -->
-  <div class="tab-panel" id="tab-all-items">
-    <div class="card">
-      <div class="card-title">All Items</div>
-      <div class="card-desc">Complete log of all reported lost and found items.</div>
-      <div id="all-items-list" class="item-list"></div>
-    </div>
-  </div>
+<button class="tab-btn" onclick="switchTab('report-found')">
+Report Found
+</button>
+
+<button class="tab-btn" onclick="switchTab('search')">
+Search & Claim
+</button>
+
+<button class="tab-btn" onclick="switchTab('all-items')">
+All Items
+</button>
+
+<button class="tab-btn" id="adminBtn" style="display:none;" onclick="switchTab('admin', this)">
+Admin
+</button>
+
+<button class="tab-btn" id="notifyBtn" style="display:none;" onclick="switchTab('notify')">
+Notifications
+</button>
+
+<button class="tab-btn" id="reportBtn" style="display:none;" onclick="switchTab('reports')">
+Reports
+</button>
 
 </div>
 
-<!-- Claim Modal -->
+<!-- REPORT LOST -->
+<div class="tab-panel active" id="tab-report-lost">
+<div class="card">
+<div class="card-title">Report Lost Item</div>
+
+<div class="form-grid">
+<div class="field">
+<label>Item Name</label>
+<input id="lost-name">
+</div>
+
+<div class="field">
+<label>Category</label>
+<select id="lost-category">
+<option>Electronics</option>
+<option>Wallet / Purse</option>
+<option>Keys</option>
+<option>Clothing</option>
+<option>Bag / Backpack</option>
+<option>Books / Documents</option>
+<option>Stationery</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Location</label>
+<input id="lost-location">
+</div>
+
+<div class="field">
+<label>Description</label>
+<input id="lost-desc">
+</div>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-primary" onclick="submitLostItem()">Submit</button>
+</div>
+</div>
+</div>
+
+<!-- REPORT FOUND -->
+<div class="tab-panel" id="tab-report-found">
+<div class="card">
+<div class="card-title">Report Found Item</div>
+
+<div class="form-grid">
+<div class="field">
+<label>Item Name</label>
+<input id="found-name">
+</div>
+
+<div class="field">
+<label>Category</label>
+<select id="found-category">
+<option>Electronics</option>
+<option>Wallet / Purse</option>
+<option>Keys</option>
+<option>Clothing</option>
+<option>Bag / Backpack</option>
+<option>Books / Documents</option>
+<option>Stationery</option>
+<option>Other</option>
+</select>
+</div>
+
+<div class="field">
+<label>Location</label>
+<input id="found-location">
+</div>
+
+<div class="field">
+<label>Description</label>
+<input id="found-desc">
+</div>
+</div>
+
+<div class="btn-row">
+<button class="btn btn-success" onclick="submitFoundItem()">Submit</button>
+</div>
+</div>
+</div>
+
+<!-- SEARCH -->
+<div class="tab-panel" id="tab-search">
+<div class="card">
+<div class="card-title">Search & Claim</div>
+<div id="search-results" class="item-list"></div>
+</div>
+</div>
+
+<!-- ALL ITEMS -->
+<div class="tab-panel" id="tab-all-items">
+<div class="card">
+<div class="card-title">All Items</div>
+<div id="all-items-list" class="item-list"></div>
+</div>
+</div>
+
+<!-- ADMIN -->
+<div class="tab-panel" id="tab-admin">
+<div class="card">
+<div class="card-title">Admin Dashboard</div>
+<div class="card-desc">Approve or Reject Claims</div>
+<div id="admin-list" class="item-list"></div>
+</div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div class="tab-panel" id="tab-notify">
+<div class="card">
+<div class="card-title">Notifications</div>
+<div id="notify-list" class="item-list"></div>
+</div>
+</div>
+
+<!-- REPORTS -->
+<div class="tab-panel" id="tab-reports">
+<div class="card">
+<div class="card-title">Reports</div>
+<div id="report-list"></div>
+</div>
+</div>
+
+</div>
+
+<!-- CLAIM MODAL -->
 <div id="claim-modal" class="modal-overlay" style="display:none;">
-  <div class="modal">
-    <h3>Claim This Item</h3>
-    <p>Tell us why this item is yours. An admin will verify and approve your claim.</p>
-    <div class="field" style="margin-bottom: 1rem;">
-      <label>Your Name *</label>
-      <input type="text" id="claim-name" placeholder="Full name">
-    </div>
-    <div class="field" style="margin-bottom: 1rem;">
-      <label>Contact / Email</label>
-      <input type="text" id="claim-contact" placeholder="Email or phone">
-    </div>
-    <div class="field" style="margin-bottom: 1rem;">
-      <label>Proof of Ownership</label>
-      <textarea id="claim-proof" placeholder="Describe something only the owner would know (serial number, contents inside, sticker, etc.)" style="min-height: 80px;"></textarea>
-    </div>
-    <div class="btn-row" style="justify-content: flex-end; margin-top: 0.5rem;">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="submitClaim()">Submit Claim</button>
-    </div>
-  </div>
+<div class="modal">
+<h3>Claim Item</h3>
+
+<div class="field" style="margin-bottom:12px;">
+<label>Your Name</label>
+<input id="claim-name">
+</div>
+
+<div class="btn-row" style="justify-content:flex-end;">
+<button class="btn btn-outline" onclick="closeModal()">Cancel</button>
+<button class="btn btn-primary" onclick="submitClaim()">Submit Claim</button>
+</div>
+</div>
 </div>
 
 <div id="toast-container"></div>
-
 <script>
 const BASE = "http://localhost:8080";
-let items = [];
+
+let items = JSON.parse(localStorage.getItem("items")) || [];
+let claims = JSON.parse(localStorage.getItem("claims")) || [];
+let notifications = JSON.parse(localStorage.getItem("notifications")) || [];
+
+function saveData() {
+  localStorage.setItem("items", JSON.stringify(items));
+  localStorage.setItem("claims", JSON.stringify(claims));
+  localStorage.setItem("notifications", JSON.stringify(notifications));
+}
+
+let currentUser = "";
+let currentRole = "user";
 let claimTargetId = null;
-let matchCount = 0;
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach((b,i) => {
-    const tabs = ['report-lost','report-found','search','all-items'];
-    b.classList.toggle('active', tabs[i] === tab);
-  });
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
-  if (tab === 'search') renderSearch();
-  if (tab === 'all-items') renderAll();
+/* ---------------- LOGIN ---------------- */
+
+function loginUser() {
+  const name = document.getElementById("login-name").value.trim();
+  const role = document.getElementById("login-role").value;
+  const pass = document.getElementById("login-pass").value.trim();
+
+  if (!name) {
+    toast("Enter your name", "error");
+    return;
+  }
+
+  if (role === "admin" && pass !== "admin123") {
+    toast("Wrong admin password", "error");
+    return;
+  }
+
+  currentUser = name;
+  currentRole = role;
+
+  document.getElementById("login-screen").style.display = "none";
+
+  document.getElementById("welcome-text").textContent =
+    "Welcome, " + currentUser + " (" + currentRole + ")";
+
+  document.getElementById("notifyBtn").style.display = "flex";
+
+  /* ADMIN LOGIN */
+  if (currentRole === "admin") {
+
+    document.getElementById("adminBtn").style.display = "flex";
+    document.getElementById("reportBtn").style.display = "flex";
+
+    /* Hide User Tabs */
+    document.querySelectorAll(".tab-btn")[0].style.display = "none"; // Report Lost
+    document.querySelectorAll(".tab-btn")[1].style.display = "none"; // Report Found
+    document.querySelectorAll(".tab-btn")[2].style.display = "none"; // Search & Claim
+
+    switchTab("admin");
+  }
+
+  /* NORMAL USER LOGIN */
+  else {
+
+    document.getElementById("adminBtn").style.display = "none";
+    document.getElementById("reportBtn").style.display = "none";
+
+    switchTab("report-lost");
+  }
+
+ toast("Login successful", "success");
+
+/* Reload all saved data to screen */
+renderAll();
+renderSearch();
+loadClaims();
+loadNotify();
+loadReport();
+updateStats();
 }
 
-function toast(msg, type='info') {
-  const c = document.getElementById('toast-container');
-  const t = document.createElement('div');
-  t.className = 'toast ' + type;
-  const icons = { success: '✓', error: '✕', info: 'ℹ' };
-  t.innerHTML = `<span style="font-size:1rem">${icons[type]||'ℹ'}</span> ${msg}`;
+function logoutUser() {
+  location.reload();
+}
+
+/* ---------------- TABS ---------------- */
+
+function switchTab(tab, btn) {
+
+  document.querySelectorAll(".tab-btn")
+    .forEach(b => b.classList.remove("active"));
+
+  document.querySelectorAll(".tab-panel")
+    .forEach(p => p.classList.remove("active"));
+
+  const panel = document.getElementById("tab-" + tab);
+  if (panel) panel.classList.add("active");
+
+  if (btn) btn.classList.add("active");
+
+  if (tab === "search") renderSearch();
+  if (tab === "all-items") renderAll();
+  if (tab === "admin") loadClaims();
+  if (tab === "notify") loadNotify();
+  if (tab === "reports") loadReport();
+}
+
+/* ---------------- TOAST ---------------- */
+
+function toast(msg, type = "info") {
+  const c = document.getElementById("toast-container");
+
+  const t = document.createElement("div");
+  t.className = "toast " + type;
+  t.innerHTML = msg;
+
   c.appendChild(t);
-  setTimeout(() => t.remove(), 4000);
+
+  setTimeout(() => {
+    t.remove();
+  }, 3000);
 }
+
+/* ---------------- STATS ---------------- */
 
 function updateStats() {
-  document.getElementById('stat-lost').textContent = items.filter(i => i.type === 'lost').length;
-  document.getElementById('stat-found').textContent = items.filter(i => i.type === 'found').length;
-  document.getElementById('stat-matched').textContent = matchCount;
+  document.getElementById("stat-lost").textContent =
+    items.filter(i => i.type === "lost").length;
+
+  document.getElementById("stat-found").textContent =
+    items.filter(i => i.type === "found").length;
+
+  document.getElementById("stat-claims").textContent = claims.length;
 }
+
+/* ---------------- LOST ITEM ---------------- */
 
 async function submitLostItem() {
-  const name = document.getElementById('lost-name').value.trim();
-  const cat = document.getElementById('lost-category').value;
-  const person = document.getElementById('lost-person').value.trim() || 'Anonymous';
-  const loc = document.getElementById('lost-location').value.trim() || 'Unknown';
-  const desc = document.getElementById('lost-desc').value.trim();
+  const name = document.getElementById("lost-name").value.trim();
+  const cat = document.getElementById("lost-category").value;
+  const loc = document.getElementById("lost-location").value.trim();
+  const desc = document.getElementById("lost-desc").value.trim();
 
-  if (!name) { toast('Please enter the item name.', 'error'); return; }
-
-  const payload = `${name}|${cat}|${person}|${loc}|${desc}`;
-
-  let matched = false;
-  try {
-    const res = await fetch(`${BASE}/reportLost`, { method: 'POST', body: payload });
-    const data = await res.text();
-    matched = data.toLowerCase().includes('match');
-  } catch(e) {
-    toast('Could not connect to server. Saving locally.', 'error');
+  if (!name) {
+    toast("Enter item name", "error");
+    return;
   }
 
-  const item = {
+  const payload = `${name}|${cat}|${currentUser}|${loc}|${desc}`;
+
+  try {
+    await fetch(BASE + "/reportLost", {
+      method: "POST",
+      body: payload
+    });
+  } catch (e) {}
+
+  items.push({
     id: Date.now(),
-    type: 'lost',
+    type: "lost",
     name,
     category: cat,
-    person,
+    person: currentUser,
     location: loc,
     description: desc,
-    status: 'open',
+    status: "open",
     date: new Date().toLocaleDateString()
-  };
-  items.push(item);
-
-  if (matched) {
-    matchCount++;
-    toast(`Match found for "${name}"! A claim has been initiated.`, 'success');
-  } else {
-    toast(`Lost report for "${name}" submitted.`, 'info');
-  }
-
-  document.getElementById('lost-name').value = '';
-  document.getElementById('lost-person').value = '';
-  document.getElementById('lost-location').value = '';
-  document.getElementById('lost-desc').value = '';
-  updateStats();
-}
-
-async function submitFoundItem() {
-  const name = document.getElementById('found-name').value.trim();
-  const cat = document.getElementById('found-category').value;
-  const person = document.getElementById('found-person').value.trim() || 'Anonymous';
-  const loc = document.getElementById('found-location').value.trim() || 'Unknown';
-  const desc = document.getElementById('found-desc').value.trim();
-
-  if (!name) { toast('Please enter the item name.', 'error'); return; }
-
-  const payload = `${name}|${cat}|${person}|${loc}|${desc}`;
-
-  let matched = false;
-  try {
-    const res = await fetch(`${BASE}/reportFound`, { method: 'POST', body: payload });
-    const data = await res.text();
-    matched = data.toLowerCase().includes('match');
-  } catch(e) {
-    toast('Could not connect to server. Saving locally.', 'error');
-  }
-
-  const item = {
-    id: Date.now(),
-    type: 'found',
-    name,
-    category: cat,
-    person,
-    location: loc,
-    description: desc,
-    status: 'open',
-    date: new Date().toLocaleDateString()
-  };
-  items.push(item);
-
-  if (matched) {
-    matchCount++;
-    toast(`A match was found for "${name}"! The owner has been notified.`, 'success');
-  } else {
-    toast(`Found item "${name}" reported. Thank you!`, 'success');
-  }
-
-  document.getElementById('found-name').value = '';
-  document.getElementById('found-person').value = '';
-  document.getElementById('found-location').value = '';
-  document.getElementById('found-desc').value = '';
-  updateStats();
-}
-
-function renderSearch() {
-  const q = (document.getElementById('search-input').value || '').toLowerCase();
-  const list = document.getElementById('search-results');
-  const results = items.filter(i => {
-    if (i.type !== 'found') return false;
-    if (!q) return true;
-    return i.name.toLowerCase().includes(q)
-      || i.category.toLowerCase().includes(q)
-      || i.location.toLowerCase().includes(q)
-      || (i.description||'').toLowerCase().includes(q);
   });
 
-  if (!results.length) {
-    list.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>${q ? 'No found items match your search.' : 'No found items reported yet.'}</p></div>`;
+  notifications.push("Lost item reported: " + name);
+  saveData();
+
+  toast("Lost item submitted", "success");
+  updateStats();
+  loadNotify();
+}
+
+/* ---------------- FOUND ITEM ---------------- */
+
+async function submitFoundItem() {
+  const name = document.getElementById("found-name").value.trim();
+  const cat = document.getElementById("found-category").value;
+  const loc = document.getElementById("found-location").value.trim();
+  const desc = document.getElementById("found-desc").value.trim();
+
+  if (!name) {
+    toast("Enter item name", "error");
     return;
   }
 
-  list.innerHTML = results.map(i => `
-    <div class="item-card">
-      <span class="item-badge badge-found">Found</span>
-      <div class="item-info">
-        <div class="item-name">${i.name}</div>
-        <div class="item-meta">${i.category} &nbsp;·&nbsp; Found by ${i.person} &nbsp;·&nbsp; ${i.location} &nbsp;·&nbsp; ${i.date}</div>
-        ${i.description ? `<div class="item-meta" style="margin-top:2px;">${i.description}</div>` : ''}
-      </div>
-      <div class="item-actions">
-        ${i.status === 'open'
-          ? `<button class="btn btn-primary btn-sm" onclick="openClaimModal(${i.id})">Claim</button>`
-          : `<span class="item-badge badge-claimed">${i.status}</span>`
-        }
-      </div>
-    </div>
-  `).join('');
+  const payload = `${name}|${cat}|${currentUser}|${loc}|${desc}`;
+
+  try {
+    await fetch(BASE + "/reportFound", {
+      method: "POST",
+      body: payload
+    });
+  } catch (e) {}
+
+  items.push({
+    id: Date.now(),
+    type: "found",
+    name,
+    category: cat,
+    person: currentUser,
+    location: loc,
+    description: desc,
+    status: "open",
+    date: new Date().toLocaleDateString()
+  });
+
+  notifications.push("Found item reported: " + name);
+  saveData();
+
+  toast("Found item submitted", "success");
+  updateStats();
+  loadNotify();
 }
+
+/* ---------------- SEARCH ---------------- */
+
+function renderSearch() {
+
+  const list = document.getElementById("search-results");
+
+  const foundItems = items.filter(i => i.type === "found");
+
+  if (!foundItems.length) {
+    list.innerHTML = "No found items";
+    return;
+  }
+
+  list.innerHTML = foundItems.map(i => {
+
+    /* Check if current user has reported same item as lost */
+    const userLost = items.find(l =>
+      l.type === "lost" &&
+      l.person === currentUser &&
+      l.name.toLowerCase() === i.name.toLowerCase()
+    );
+
+    /* Claim allowed only if:
+       1. Current user lost same item
+       2. Current user is NOT finder
+       3. Item still open
+    */
+    const canClaim =
+      userLost &&
+      i.person !== currentUser &&
+      i.status === "open";
+
+    return `
+      <div class="item-card">
+
+        <span class="item-badge badge-found">
+          Found
+        </span>
+
+        <div class="item-info">
+
+          <div class="item-name">
+            ${i.name}
+          </div>
+
+          <div class="item-meta">
+            ${i.category} · ${i.location} · ${i.person}
+          </div>
+
+        </div>
+
+        <div class="item-actions">
+
+          ${
+            canClaim
+            ? `<button class="btn btn-primary btn-sm"
+                 onclick="openClaimModal(${i.id})">
+                 Claim
+               </button>`
+
+            : i.person === currentUser
+              ? `<span class="item-badge badge-claimed">
+                   Your Found Item
+                 </span>`
+
+              : i.status !== "open"
+                ? `<span class="item-badge badge-claimed">
+                     ${i.status}
+                   </span>`
+
+                : `<span class="item-badge badge-claimed">
+                     No Matching Lost Report
+                   </span>`
+          }
+
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
+
+/* ---------------- ALL ITEMS ---------------- */
 
 function renderAll() {
-  const list = document.getElementById('all-items-list');
+  const list = document.getElementById("all-items-list");
+
   if (!items.length) {
-    list.innerHTML = `<div class="empty-state"><div class="icon">📋</div><p>No items reported yet.</p></div>`;
+    list.innerHTML = "No items";
     return;
   }
+
   list.innerHTML = [...items].reverse().map(i => `
     <div class="item-card">
-      <span class="item-badge ${i.type === 'found' ? 'badge-found' : 'badge-lost'}">${i.type === 'found' ? 'Found' : 'Lost'}</span>
+      <span class="item-badge ${i.type === "lost" ? "badge-lost" : "badge-found"}">
+        ${i.type}
+      </span>
+
       <div class="item-info">
         <div class="item-name">${i.name}</div>
-        <div class="item-meta">${i.category} &nbsp;·&nbsp; ${i.person} &nbsp;·&nbsp; ${i.location} &nbsp;·&nbsp; ${i.date}</div>
+        <div class="item-meta">${i.location} · ${i.person}</div>
       </div>
-      <span class="item-badge ${i.status === 'open' ? (i.type==='lost'?'badge-lost':'badge-found') : i.status==='claimed'?'badge-claimed':'badge-closed'}">${i.status}</span>
+
+      <span class="item-badge badge-claimed">${i.status}</span>
     </div>
-  `).join('');
+  `).join("");
 }
+
+/* ---------------- CLAIM ---------------- */
 
 function openClaimModal(id) {
   claimTargetId = id;
-  document.getElementById('claim-name').value = '';
-  document.getElementById('claim-contact').value = '';
-  document.getElementById('claim-proof').value = '';
-  document.getElementById('claim-modal').style.display = 'flex';
+  document.getElementById("claim-modal").style.display = "flex";
 }
 
 function closeModal() {
-  document.getElementById('claim-modal').style.display = 'none';
-  claimTargetId = null;
+  document.getElementById("claim-modal").style.display = "none";
+  document.getElementById("claim-name").value="";
 }
 
 async function submitClaim() {
-  const name = document.getElementById('claim-name').value.trim();
-  const contact = document.getElementById('claim-contact').value.trim();
-  const proof = document.getElementById('claim-proof').value.trim();
 
-  if (!name) { toast('Please enter your name.', 'error'); return; }
+  if (!claimTargetId) {
+    toast("No item selected", "error");
+    return;
+  }
 
   const item = items.find(i => i.id === claimTargetId);
-  if (!item) { closeModal(); return; }
 
-  const payload = `${item.name}|${name}|${contact}|${proof}`;
+  if (!item) {
+    toast("Item not found", "error");
+    return;
+  }
 
-  try {
-    await fetch(`${BASE}/submitClaim`, { method: 'POST', body: payload });
-  } catch(e) {}
+  item.status = "pending";
 
-  item.status = 'claimed';
+  claims.push({
+    id: Date.now(),
+    itemId: item.id,
+    itemName: item.name,
+    user: currentUser,
+    status: "pending",
+    proof: "Ownership proof"
+  });
+
+  notifications.push(
+    "Admin: New claim submitted for " + item.name
+  );
+
+  saveData();
+
   closeModal();
-  toast(`Claim submitted for "${item.name}". Admin will review and approve.`, 'success');
+
+  toast("Claim submitted", "success");
+
+  renderAll();
   renderSearch();
+  loadClaims();
+  loadNotify();
+  updateStats();
+}
+/* ---------------- ADMIN ---------------- */
+
+function loadClaims() {
+
+  const box = document.getElementById("admin-list");
+
+  const pending = claims.filter(c => c.status === "pending");
+
+  if (pending.length === 0) {
+    box.innerHTML = `<p>No pending claims</p>`;
+    return;
+  }
+
+  box.innerHTML = pending.map(c => {
+
+    /* Find claimed FOUND item */
+    const found = items.find(i =>
+      i.id == c.itemId && i.type === "found"
+    );
+
+    if (!found) return "";
+
+    /* Find matching LOST item */
+    const lost = items.find(i =>
+      i.type === "lost" &&
+      i.name.toLowerCase() === found.name.toLowerCase()
+    );
+
+    return `
+      <div class="item-card">
+
+        <h3 style="margin-bottom:15px;">
+          ${found.name}
+        </h3>
+
+        <div style="display:grid;
+                    grid-template-columns:1fr 1fr;
+                    gap:18px;">
+
+          <div style="padding:12px;border:1px solid #ddd;border-radius:12px;">
+            <b>LOST REPORT</b><br><br>
+            By: ${lost ? lost.person : "-"}<br>
+            Location: ${lost ? lost.location : "-"}<br>
+            Description: ${lost ? lost.description : "-"}
+          </div>
+
+          <div style="padding:12px;border:1px solid #ddd;border-radius:12px;">
+            <b>FOUND REPORT</b><br><br>
+            By: ${found.person}<br>
+            Location: ${found.location}<br>
+            Description: ${found.description || "-"}
+          </div>
+
+        </div>
+
+        <div style="margin-top:18px;padding:12px;border:1px solid #ddd;border-radius:12px;">
+          <b>CLAIM REQUEST</b><br><br>
+          Claimed By: ${c.user}<br>
+          Proof: ${c.proof || "No proof given"}
+        </div>
+
+        <div style="margin-top:18px;">
+          <button class="btn btn-success"
+            onclick="approveClaim(${c.id})">
+            Approve
+          </button>
+
+          <button class="btn btn-outline"
+            onclick="rejectClaim(${c.id})">
+            Reject
+          </button>
+        </div>
+
+      </div>
+    `;
+
+  }).join("");
+}
+function approveClaim(id) {
+  const c = claims.find(x => x.id === id);
+  if (!c) return;
+
+  c.status = "approved";
+
+  const item = items.find(i => i.id === c.itemId);
+  if (item) item.status = "closed";
+
+  notifications.push("Claim approved for " + c.itemName);
+  saveData();
+
+  toast("Claim Approved", "success");
+
+  loadClaims();
+  loadNotify();
+  renderSearch();
+  renderAll();
+  loadReport();
   updateStats();
 }
 
-document.getElementById('claim-modal').addEventListener('click', function(e) {
-  if (e.target === this) closeModal();
-});
+function rejectClaim(id) {
+  const c = claims.find(x => x.id === id);
+  if (!c) return;
 
-updateStats();
+  c.status = "rejected";
+
+  const item = items.find(i => i.id === c.itemId);
+  if (item) item.status = "open";
+
+  notifications.push("Claim rejected for " + c.itemName);
+  saveData();
+
+  toast("Claim Rejected", "error");
+
+  loadClaims();
+  loadNotify();
+  renderSearch();
+  renderAll();
+  loadReport();
+  updateStats();
+}
+
+/* ---------------- NOTIFICATIONS ---------------- */
+
+function loadNotify() {
+  const list = document.getElementById("notify-list");
+
+  if (!notifications.length) {
+    list.innerHTML = "No notifications";
+    return;
+  }
+
+  list.innerHTML = [...notifications].reverse().map(n => `
+    <div class="item-card">
+      <div class="item-info">🔔 ${n}</div>
+    </div>
+  `).join("");
+}
+
+/* ---------------- REPORTS ---------------- */
+
+function loadReport() {
+  const div = document.getElementById("report-list");
+
+  const closed = items.filter(i => i.status === "closed").length;
+  const approved = claims.filter(c => c.status === "approved").length;
+  const rejected = claims.filter(c => c.status === "rejected").length;
+
+  div.innerHTML = `
+    <div class="item-card"><b>Total Lost:</b> ${items.filter(i=>i.type==="lost").length}</div>
+    <div class="item-card"><b>Total Found:</b> ${items.filter(i=>i.type==="found").length}</div>
+    <div class="item-card"><b>Total Claims:</b> ${claims.length}</div>
+    <div class="item-card"><b>Approved:</b> ${approved}</div>
+    <div class="item-card"><b>Rejected:</b> ${rejected}</div>
+    <div class="item-card"><b>Closed Cases:</b> ${closed}</div>
+  `;
+}
+
+/* ---------------- MODAL CLICK CLOSE ---------------- */
+
+document.getElementById("claim-modal").addEventListener("click", function(e){
+  if(e.target === this) closeModal();
+});
 </script>
 
 </body>
